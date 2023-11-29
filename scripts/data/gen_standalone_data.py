@@ -93,7 +93,7 @@ print(failnode)
 # the goal of this script is to generate placement of NSTRIPES stripes
 placement=[]
 
-cmd = "mkdir -p {}; mkdir -p {};".format(blk_dir, meta_dir)
+cmd = "mkdir -p {} {}".format(blk_dir, stripestore_dir)
 print(cmd)
 os.system(cmd)
 
@@ -154,7 +154,7 @@ for stripeid in range(NSTRIPES):
 
     # ssh to loclist[i] and generate a blklist[i]
     for i in range(len(blklist)):
-        cmd = "ssh {} \"mkdir -p {}; mkdir -p {}; dd if=/dev/urandom of={}/{} bs={} count=1 iflag=fullblock\"".format(loclist[i], blk_dir, meta_dir, blk_dir, blklist[i], BLKBYTES)
+        cmd = "ssh {} \"mkdir -p {}; mkdir -p {}; dd if=/dev/urandom of={}/{} bs={} count=1 iflag=fullblock\"".format(loclist[i], blk_dir, stripestore_dir, blk_dir, blklist[i], BLKBYTES)
         print(cmd)
         os.system(cmd)
 
