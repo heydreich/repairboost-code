@@ -1,7 +1,7 @@
 CC = g++ -std=c++11
 JCC = gcc 
 CLIBS = -pthread -lgf_complete lib/libhiredis.a
-CFLAGS = -O3 -mmmx -msse -mpclmul -msse4.2 -DINTEL_SSE4
+CFLAGS = -O3 -mmmx -msse -mpclmul -msse4.2 -DINTEL_SSE4 -mavx
 
 SRC_DIR = src
 UTIL_SRC_DIR = $(SRC_DIR)/Util
