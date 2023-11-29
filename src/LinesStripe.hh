@@ -48,7 +48,22 @@ struct repairGraph {
             for(int j=1; j<=out[i][0]; ++j) cout << out[i][j] << " ";
             cout << endl;
         }
+        
     }
+    void display2(ofstream* ofs) {
+        *ofs << "node_cnt = " << _node_cnt << endl;
+        for(int i=0; i<_node_cnt; ++i) {
+            *ofs << "in_degree[" << i << "] = " << in[i][0] << endl;
+            for(int j=1; j<=in[i][0]; ++j) *ofs << in[i][j] << " ";
+            *ofs << endl;
+
+            *ofs << "out_degree[" << i << "] = " << out[i][0] << endl;
+            for(int j=1; j<=out[i][0]; ++j) *ofs << out[i][j] << " ";
+            *ofs << endl;
+        }
+        
+    }//testv
+    
 };
 
 
@@ -77,7 +92,36 @@ class Stripe {
                     up_dw_time[i][j] = make_pair(-1, -1);
             }
         }
-        
+
+        void dump(){
+            rG_bp.display();
+
+            int node_cnt = rG_bp._node_cnt;
+            for(int i=0; i<node_cnt; ++i) {
+                for(int j=1; j<=rG_bp.out[i][0]; ++j)
+                {
+                    cout << "[" << i <<"] -> [" << rG_bp.out[i][j] <<"] at: " << repairTime[i][rG_bp.out[i][j]] << endl;
+                }
+                cout << endl;
+            }
+        } //debugv
+        int dump2(ofstream* ofs){
+            // rG_bp.display2(ofs);
+            int MaxRepairTime = 0;
+            int node_cnt = rG_bp._node_cnt;
+            // cout << "node_cnt" << node_cnt << endl;
+            for(int i=0; i<node_cnt; ++i) {
+                // *ofs << rG_bp.out[i][0] << endl;
+                for(int j=1; j<=rG_bp.out[i][0]; ++j)
+                {
+                    *ofs << "[" << i <<"] -> [" << rG_bp.out[i][j] <<"] at: " << repairTime[i][rG_bp.out[i][j]] << endl;
+                    if (MaxRepairTime < repairTime[i][rG_bp.out[i][j]]) MaxRepairTime = repairTime[i][rG_bp.out[i][j]];
+                }
+                *ofs << endl;
+
+            }
+            return MaxRepairTime;
+        } //debugv
 };
 
 #endif  //_LINES_STRIPE_HH_
