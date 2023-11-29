@@ -10,7 +10,7 @@
 #       8.  PKTSIZE [1|64] the size of packet, input 64 means 64M ,blkMiB need to be divided by PKTSIZE
 #       9.  num stripes [20]
 #       10. gendata [true|false]
-#       NTEST [5]
+#       NTEST [5] 不用输
 
 
 import os
