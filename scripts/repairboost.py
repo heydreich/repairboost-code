@@ -6,8 +6,8 @@
 #       4.  ECK [3]
 #       5.  ECW [0] The number of groups, only valid in LRC. Default is 0.
 #       6.  method [cr|ppr|path]
-#       7.  blkMiB [1|256]
-#       8.  PKTSIZE [1|64] the size of packet, input 64 means 64M ,blkMiB need to be divided by PKTSIZE
+#       7.  blkMiB [1|256] MB
+#       8.  PKTSIZE [1|64] the size of packet, input 64 means 64K ,blkMiB need to be divided by PKTSIZE
 #       9.  num stripes [20]
 #       10. gendata [true|false]
 #       NTEST [5] dont need to input
@@ -33,8 +33,9 @@ GENDATASTR=sys.argv[10]
 # NTEST=int(sys.argv[13]) #?
 NTEST=1
 
-pktcount = BLKMB / PKTSIZE
-PKTSIZE = PKTSIZE * 1048576
+PKTSIZE = PKTSIZE * 1024
+pktcount = BLKMB * 1048576 / PKTSIZE
+
 
 gendata=False
 if GENDATASTR == "true":
