@@ -36,7 +36,7 @@ home_dir_str, stderr = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 home_dir = home_dir_str.decode().strip()
 
 # proj dir
-proj_dir="{}/repairboost-code".format(home_dir)
+proj_dir="{}/repairboost-code2".format(home_dir)
 stripestore_dir = "{}/meta/standalone-meta".format(proj_dir)
 script_dir = "{}/scripts".format(proj_dir)
 blk_dir = "{}/meta/standalone-blocks".format(proj_dir)
@@ -92,6 +92,11 @@ print(failnode)
 
 # the goal of this script is to generate placement of NSTRIPES stripes
 placement=[]
+
+cmd = "mkdir -p {}; mkdir -p {};".format(blk_dir, meta_dir)
+print(cmd)
+os.system(cmd)
+
 
 
 for stripeid in range(NSTRIPES):
@@ -149,7 +154,7 @@ for stripeid in range(NSTRIPES):
 
     # ssh to loclist[i] and generate a blklist[i]
     for i in range(len(blklist)):
-        cmd = "ssh {} \"mkdir -p {}; dd if=/dev/urandom of={}/{} bs={} count=1 iflag=fullblock\"".format(loclist[i], blk_dir, blk_dir, blklist[i], BLKBYTES)
+        cmd = "ssh {} \"mkdir -p {}; mkdir -p {}; dd if=/dev/urandom of={}/{} bs={} count=1 iflag=fullblock\"".format(loclist[i], blk_dir, meta_dir, blk_dir, blklist[i], BLKBYTES)
         print(cmd)
         os.system(cmd)
 
