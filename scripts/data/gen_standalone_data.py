@@ -36,7 +36,7 @@ home_dir_str, stderr = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
 home_dir = home_dir_str.decode().strip()
 
 # proj dir
-proj_dir="{}/repairboost-code2".format(home_dir)
+proj_dir="{}/repairboost-code".format(home_dir)
 stripestore_dir = "{}/meta/standalone-meta".format(proj_dir)
 script_dir = "{}/scripts".format(proj_dir)
 blk_dir = "{}/meta/standalone-blocks".format(proj_dir)
