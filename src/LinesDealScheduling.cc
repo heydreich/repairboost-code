@@ -9,10 +9,21 @@ void LinesDealScheduling::initConf(Config* conf) {
     _ec_LRC_G = _ecM - _ec_LRC_L;
     _slaveCnt = _conf->_helpersIPs.size();
 }
+void LinesDealScheduling::initConf2(Config* conf,int agent_num) {
+    _conf = conf;
+    _ecK = _conf->_ecK;
+    _ecN = _conf->_ecN;
+    _ecM = _ecN - _ecK;
+    _ec_LRC_L = _conf->_lrcL;
+    _ec_LRC_G = _ecM - _ec_LRC_L;
+    _slaveCnt = agent_num;
+}
+
 
 void LinesDealScheduling::buildGraph(int repair_method, repairGraph& G, int ecK) {
     if(repair_method == SINGLE_STRIPE_PPR) { // -- ppr
         ppr_graph(ecK, G);
+        // cout << "complete buildGraph" << endl;
     } else if(repair_method == SINGLE_STRIPE_CR) { // -- conventional repair graph
         for(int i=0; i<ecK; ++i) {
             G.out[i][0] = 1;
@@ -37,11 +48,13 @@ void LinesDealScheduling::buildGraph(int repair_method, repairGraph& G, int ecK)
 
 void LinesDealScheduling::buildStripeGraph(repairGraph& G, repairGraph& localG, int repair_method) {
     int K = _ecK;
+// cout << "get in LinesDealScheduling::buildStripeGraph" << endl;
     if(_conf->_ecType == "BUTTERFLY") K = _ecN - 1; // for BUTTERFLY code, G, K = _ecN-1
+// cout << "_conf->_ecType"<< endl;
     repairGraph g(K+1);
     G = g;
     buildGraph(repair_method, G, K);
-
+    // cout << "repair_method: " << repair_method << endl;
     int nr = _ec_LRC_L ? _ecK/_ec_LRC_L : 0 ;
     repairGraph lg(nr+1);
     localG = lg;
@@ -51,7 +64,7 @@ void LinesDealScheduling::buildStripeGraph(repairGraph& G, repairGraph& localG, 
 
 void LinesDealScheduling::ppr_graph(int ecK, repairGraph& G) {
     int depth = ceil(1.0*log(ecK+1)/log(2));
-#if DEBUG_COORD
+#if defined DEBUG_COORD
     cout << "structure of ppr: " << endl;
     cout << "depth = " << depth << endl;
     for(int j=1; j<=depth; ++j) {
@@ -73,8 +86,9 @@ void LinesDealScheduling::ppr_graph(int ecK, repairGraph& G) {
             G.in[to-1][++G.in[to-1][0]] = k-1;
         }
     }
+    // cout << "going to display()" << endl;//testv
 
-#if DEBUG_COORD
+#if defined DEBUG_COORD
     G.display();
 #endif
 
@@ -94,8 +108,11 @@ bool piii_desc_cmp(piii x, piii y) {
 
 vector<Stripe> LinesDealScheduling::repairboost(int failNodeId, int repair_method, int lostBlkCnt, int* idxs, int* placement, int* isSoureCandidate) {
 
+    // cout << "get in LinesDealScheduling::repairboost"  << endl;//test
+    cout << "repair method = " << repair_method << endl;
     repairGraph G, localG;
     buildStripeGraph(G, localG, repair_method);
+    // cout << "finish LinesDealScheduling::buildStripeGraph"  << endl;//test
 
     vector<Stripe> stripes;
     for(int i=0; i<lostBlkCnt; ++i) {
@@ -127,24 +144,36 @@ vector<Stripe> LinesDealScheduling::repairboost(int failNodeId, int repair_metho
     }
     sort(sourceVertexs.begin(), sourceVertexs.end(), piii_desc_cmp);
 
+    // cout << "finish LinesDealScheduling::sourceVertexssort"  << endl;//test
+    
     for(int i=0; i<sourceVertexs.size(); ++i) {
         sid = sourceVertexs[i].first.second;
         vid = sourceVertexs[i].second;
+        // cout << "sid = " << sid << " vid = " << vid << endl;
         peers.clear();
         for(int j=0; j<_ecN; ++j) {
+            // cout << "isSoureCandidate[sid*_ecN+j]" << isSoureCandidate[sid*_ecN+j] << endl;
             if(!isSoureCandidate[sid*_ecN+j]) continue;
             pid = placement[sid*_ecN+j];
+            // cout << "push pid before continue" << pid << endl;
             if(pid == failNodeId || isSelected.count({sid, pid})) continue;
             peers.push_back({{load_dwload[pid], load_upload[pid]}, pid});
+            // cout << "push pid" << pid << endl;
         }
+        // cout << "2sid = " << sid << " 2vid = " << vid << endl;
         sort(peers.begin(),peers.end(), piii_cmp);
+        // cout << "pid = ?" << endl;
         pid = peers[0].second;
+        // cout << "pid = " << pid << endl;
         stripes[sid].vertex_to_peerNode[vid] = pid;
+        // cout << "pid2 = " << pid << endl;
         load_upload[pid] += stripes[sid].rG.out[vid][0];
         load_dwload[pid] += stripes[sid].rG.in[vid][0];
         isSelected[{sid, pid}] = 1; // for unique!
     }
-    
+
+    // cout << "finish LinesDealScheduling::sourceVertexs  select"  << endl;//test
+
     // -- select replacement nodes 
     map<int, bool> isStore;
     vector<pii> destVertexs; // (load_download, idx) for destNode in repairGraph
@@ -152,24 +181,41 @@ vector<Stripe> LinesDealScheduling::repairboost(int failNodeId, int repair_metho
         destVertexs.push_back({stripes[i].rG.in[stripes[i].rG._node_cnt-1][0], i});
     }
     sort(destVertexs.begin(), destVertexs.end(), pii_desc_cmp);
+    // cout << "finish LinesDealScheduling::destVertexs  sort"  << endl;//test
     for(int i=0; i<lostBlkCnt; ++i) {
         sid = destVertexs[i].second;
         peers.clear();
         isStore.clear();
         for(int j=0; j<_ecN; ++j) isStore[placement[sid*_ecN+j]] = 1;
+
+        // for (auto it : isStore) {
+        //     cout << "key: " << it.first << " value:" << it.second << endl;
+        // }//testv
+        // cout << "slaceCNt = " << _slaveCnt << endl;//testv
+
         for(int j=0; j<_slaveCnt; ++j) {
             if(isStore.count(j)) continue;
             peers.push_back({{load_storage[j], load_dwload[j]}, j});
         }
         sort(peers.begin(), peers.end(), piii_cmp);
+
+        // cout << "LinesDealScheduling peers sort and i = " << i << ", peers.size :" 
+        // << peers.size() << ", isStore.size :"  << isStore.size() << endl;//test
+
         pid = peers[0].second;
+        // cout << " pid = peers[0].second" << i << endl;//test
         stripes[sid].vertex_to_peerNode[stripes[sid].rG._node_cnt-1] = pid;
+        //   cout << " stripes[sid].vertex_to_peerNode[stripes[sid].rG._node_cnt-1] = pid" << pid << endl;//test
         ++load_storage[pid];
+        // cout << "  ++load_storage[pid] " << i << endl;//test
         load_dwload[pid] += stripes[sid].rG.in[stripes[sid].rG._node_cnt-1][0];
+        // cout << "LinesDealScheduling load_dwload upgrade and i = " << i << endl;//test
     }
+    // cout << "finish LinesDealScheduling::lostblkcnt load cons"  << endl;//test
+
 
     // -- select special nodes
-    cout << specialSource.size() << endl;
+    cout << "specialSource: " <<specialSource.size() << endl;
     for(int i=0; i<specialSource.size(); ++i) {
         sid = specialSource[i].first;
         vid = specialSource[i].second;

@@ -1,5 +1,6 @@
 #ifndef _LINES_DEAL_SCHEDULING_HH_
 #define _LINES_DEAL_SCHEDULING_HH_
+#define DEBUG_COORD
 #include <vector>
 #include <cmath>
 #include <cstdio>
@@ -38,6 +39,7 @@ class LinesDealScheduling {
 
     public:
         void initConf(Config*);
+        void initConf2(Config*, int);
 
         vector<Stripe> repairboost(int, int, int, int*, int*, int*);
         vector<Stripe> random_select(int, int, int, int*, int*, int*);
