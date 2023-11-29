@@ -3,14 +3,14 @@
 #       1.  cluster [lab]
 #       2.  CODE [RS|LRC|BUTTERFLY]
 #       3.  ECN [4]
-#       4.  ECK [2]
+#       4.  ECK [3]
 #       5.  ECW [0] The number of groups, only valid in LRC. Default is 0.
 #       6.  method [cr|ppr|path]
 #       7.  blkMiB [1|256]
 #       8.  PKTSIZE [1|64] the size of packet, input 64 means 64M ,blkMiB need to be divided by PKTSIZE
 #       9.  num stripes [20]
 #       10. gendata [true|false]
-#       NTEST [5] 不用输
+#       NTEST [5] 
 
 
 import os
