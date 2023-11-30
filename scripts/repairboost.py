@@ -10,13 +10,31 @@
 #       8.  PKTSIZE [1|64] the size of packet, input 64 means 64K ,blkMiB need to be divided by PKTSIZE
 #       9.  num stripes [20]
 #       10. gendata [true|false]
-#       NTEST [5] dont need to input
-
 
 import os
 import sys
 import subprocess
 import time
+
+def usage():
+    print("""
+        #usage:
+        #   python fullnode.py
+        #       1.  cluster [lab]
+        #       2.  CODE [RS|LRC|BUTTERFLY]
+        #       3.  ECN [4]
+        #       4.  ECK [3]
+        #       5.  ECW [0] The number of groups, only valid in LRC. Default is 0.
+        #       6.  method [cr|ppr|path]
+        #       7.  blkMiB [1|256] MB
+        #       8.  pktKiB [1|64] the size of packet, input 64 means 64K ,blkMiB need to be divided by PKTSIZE
+        #       9.  num stripes [20]
+        #       10. gendata [true|false]
+        """)
+
+if len(sys.argv) < 11:
+    usage()
+    exit()
 
 CLUSTER=sys.argv[1]
 CODE=sys.argv[2]
@@ -24,16 +42,13 @@ ECN=int(sys.argv[3])
 ECK=int(sys.argv[4])
 ECW=int(sys.argv[5])
 METHOD=sys.argv[6]
-# SCENARIO=sys.argv[7]  #?
 BLKMB=int(sys.argv[7]) 
-# pktcount=int(sys.argv[8])#
-PKTSIZE=int(sys.argv[8]) 
+PKTKB=int(sys.argv[8]) 
 NSTRIPE=int(sys.argv[9])
 GENDATASTR=sys.argv[10]
-# NTEST=int(sys.argv[13]) #?
 NTEST=1
 
-PKTSIZE = PKTSIZE * 1024
+PKTSIZE = PKTKB * 1024
 pktcount = BLKMB * 1048576 / PKTSIZE
 
 
@@ -58,6 +73,8 @@ cache_dir="{}/cache".format(script_dir)
 exe="{}/build/ParaCoordinator".format(proj_dir)
 cluster_dir = "{}/cluster/{}".format(script_dir, CLUSTER)
 blk_dir = "{}/meta/standalone-blocks".format(proj_dir)
+network_dir="{}/network".format(script_dir)
+
 
 # 0. stop parafullnode
 cmd="cd {}; python stop.py".format(script_dir)
@@ -76,18 +93,22 @@ if gendata:
 cmd="cd {}; python createconf.py {} {} {} {} {} {} {} {} {}".format(conf_dir, CLUSTER, BLOCKSOURCE, BLKMB, pktcount, CODE, ECN, ECK, METHOD, PKTSIZE)
 os.system(cmd)
 
-# 3. start parafullnode
+# 3. clear cache
+cmd="cd {}; python clearcache.py {}".format(cache_dir, CLUSTER)
+os.system(cmd)
+
+# 4. set bdwt
+cmd="cd {}; python setbdwt.py {} {}".format(network_dir, CLUSTER, 500)
+os.system(cmd)
+
+time.sleep(2)
+
+# 5. start 
 cmd="cd {}; python start.py".format(script_dir)
 os.system(cmd)
 
-# 4. run
-for i in range(NTEST):
-# 4.1 clear cache
-# cmd="cd {}; python clearcache.py {}".format(cache_dir, CLUSTER)
-# os.system(cmd)
-
-# 4.2 repair
-
+# 6. run
+for i in range(NTEST): 
     agentnodes=[]
     f=open(cluster_dir+"/agents","r")
     for line in f:
@@ -95,15 +116,13 @@ for i in range(NTEST):
         agentnodes.append(agent)
     f.close()
     agent = agentnodes[FAILNODEID]
-
     cmd="ssh {} \"rm {}/*\"".format(agent, blk_dir)
     os.system(cmd)
 
-    cmd="ssh {} \"cd {}; ./ECClient\"".format(agent, proj_dir)
+    cmd="ssh {} \"cd {}; ./ECClient &> client_output \"".format(agent, proj_dir)
     print(cmd)
     res=subprocess.Popen(['/bin/bash','-c',cmd], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     out, err = res.communicate()
-
     print(out)
 
 #out = out.split("\n")
@@ -111,6 +130,10 @@ for i in range(NTEST):
 #    if line.find("repairtime") != -1:
 #        print(line)
 
-# 5. stop parafullnode
+# 7. unset bdwt
+cmd="cd {}; python clearbdwt.py {}".format(network_dir, CLUSTER)
+os.system(cmd)
+
+# 8. stop parafullnode
 cmd="cd {}; python stop.py".format(script_dir)
 os.system(cmd)
