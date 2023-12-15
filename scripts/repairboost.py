@@ -32,7 +32,7 @@ def usage():
         #       8.  pktKiB [1|64] the size of packet, input 64 means 64K ,blkMiB need to be divided by PKTSIZE
         #       9.  num stripes [20]
         #       10. gendata [true|false]
-        #       11. cleandata [true]
+        #       11. cleandata [true|false]
         """)
 
 if len(sys.argv) < 11:
@@ -133,7 +133,7 @@ for i in range(NTEST):
         agentnodes.append(agent)
     f.close()
 
-    # agent = agentnodes[FAILNODEID]
+    agent = agentnodes[FAILNODEID]
     # cmd="ssh {} \"rm {}/*\"".format(agent, blk_dir)
     # os.system(cmd)
 
