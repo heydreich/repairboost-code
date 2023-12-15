@@ -44,7 +44,7 @@ for attr in res:
 print("start coordinator")
 os.system("redis-cli flushall")
 os.system("killall ECCoordinator")
-command = "cd "+home_dir+"; ./ECCoordinator &> "+home_dir+"/output &"
+command = "cd "+home_dir+"; ./ECCoordinator &> "+home_dir+"/coor_output &"
 print(command)
 subprocess.Popen(['/bin/bash', '-c', command])
 
@@ -62,12 +62,12 @@ for slave in slavelist:
 
     command = "scp "+home_dir+"/ECHelper "+slave+":"+home_dir+"/"
     os.system(command)
-
     command = "scp "+home_dir+"/ECClient "+slave+":"+home_dir+"/"
     os.system(command)
+
     os.system("ssh " + slave + " \"redis-cli flushall \"")
 
     command = "ssh "+slave+" \"cd "+home_dir + \
-        "; ./ECHelper &> "+home_dir+"/output &\""
+        "; ./ECHelper &> "+home_dir+"/helper_output &\""
     print(command)
     subprocess.Popen(['/bin/bash', '-c', command])
