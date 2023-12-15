@@ -1,7 +1,7 @@
 <setting>
-<attribute><name>erasure.code.type</name><value>RS</value></attribute>
-<attribute><name>erasure.code.k</name><value>10</value></attribute>
-<attribute><name>erasure.code.n</name><value>14</value></attribute>
+<attribute><name>erasure.code.type</name><value>BUTTERFLY</value></attribute>
+<attribute><name>erasure.code.k</name><value>4</value></attribute>
+<attribute><name>erasure.code.n</name><value>6</value></attribute>
 <attribute><name>lrc.code.l</name><value>0</value></attribute>
 <attribute><name>encode.matrix.file</name><value>/home/lx/repairboost-code/conf/rsEncMat_3_4</value></attribute>
 <attribute><name>packet.size</name><value>1048576</value></attribute>

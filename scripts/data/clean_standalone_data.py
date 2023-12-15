@@ -9,13 +9,16 @@ import sys
 import subprocess
 import time
 
-if len(sys.argv) != 4:
-    exit()
+# if len(sys.argv) != 4:
+#     exit()
 
 CLUSTER=sys.argv[1]
 NSTRIPE=int(sys.argv[2])
 CODE=sys.argv[3]
-
+ECN = int(sys.argv[4])
+ECK = int(sys.argv[5])
+ECW = int(sys.argv[6])
+BLKMB = int(sys.argv[7])
 
 # home dir
 cmd = r'echo ~'
@@ -27,7 +30,8 @@ proj_dir="{}/repairboost-code".format(home_dir)
 # stripestore_dir = "{}/stripeStore".format(proj_dir)
 stripestore_dir = "{}/meta/standalone-meta".format(proj_dir)
 script_dir = "{}/scripts".format(proj_dir)
-blk_dir = "{}/meta/standalone-blocks".format(proj_dir)
+blk_dir1 = "{}/meta/standalone-blocks".format(proj_dir)
+blk_dir = "{}/meta/standalone-blocks/{}_{}_{}_{}_{}".format(proj_dir, CODE, ECN, ECK, ECW, BLKMB)
 meta_dir = "{}/meta".format(proj_dir)
 
 data_script_dir = "{}/data".format(script_dir)
@@ -64,6 +68,9 @@ for line in f:
 f.close()
 
 # remove stripestore
+cmd="rm -r {}/*".format(blk_dir1)
+print(cmd)
+os.system(cmd)
 cmd="rm {}/{}:stripe*".format(stripestore_dir, CODE.lower())
 print(cmd)
 os.system(cmd)
@@ -74,7 +81,7 @@ os.system(cmd)
 
 # remove blk
 for agent in agentnodes:
-    cmd="ssh {} \"rm {}/*\"".format(agent, blk_dir)
+    cmd="ssh {} \"rm -r {}/*\"".format(agent, blk_dir1)
     print(cmd)
     os.system(cmd)
     cmd="ssh {} \"rm {}/*\"".format(agent, stripestore_dir)

@@ -39,8 +39,11 @@ home_dir = home_dir_str.decode().strip()
 proj_dir="{}/repairboost-code".format(home_dir)
 stripestore_dir = "{}/meta/standalone-meta".format(proj_dir)
 script_dir = "{}/scripts".format(proj_dir)
-blk_dir = "{}/meta/standalone-blocks".format(proj_dir)
+blk_dir1 = "{}/meta/standalone-blocks".format(proj_dir)
+
 meta_dir = "{}/meta".format(proj_dir)
+filename = "{}_{}_{}_{}_{}".format(CODE, ECN, ECK, ECW, BLKMB)
+blk_dir = blk_dir1 + "/" + filename
 
 data_script_dir = "{}/data".format(script_dir)
 cluster_dir = "{}/cluster/{}".format(script_dir, CLUSTER)
@@ -93,9 +96,17 @@ print(failnode)
 # the goal of this script is to generate placement of NSTRIPES stripes
 placement=[]
 
+# print(filename)
+
+for root, dirs, files in os.walk(blk_dir1):
+    for name in dirs:
+        # print(name)
+        if name == filename :
+            exit()
 cmd = "mkdir -p {} {}".format(blk_dir, stripestore_dir)
 print(cmd)
 os.system(cmd)
+
 
 
 
