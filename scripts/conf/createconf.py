@@ -35,6 +35,7 @@ ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
 METHOD=sys.argv[8]   #
 PKTSIZE=int(sys.argv[9]) #
+ECW = int(sys.argv[10])
 
 RECVGROUP=10
 SENDGROUP=10
@@ -62,7 +63,8 @@ cluster_dir = "{}/cluster/{}".format(script_dir, CLUSTER)
 config_filename = "config.xml"
 stripeStore_dir = "{}/meta/standalone-meta".format(proj_dir)
 tradeoffPoint_dir = "{}/offline".format(proj_dir)
-blk_dir = "{}/meta/standalone-blocks".format(proj_dir) #
+# blk_dir = "{}/meta/standalone-blocks".format(proj_dir) #
+blk_dir = "{}/meta/standalone-blocks/{}_{}_{}_{}_{}".format(proj_dir, CODE, ECN, ECK, ECW, BLKMB)
 meta_dir = "{}/meta".format(proj_dir)
 
 #if block_source == "hdfs":

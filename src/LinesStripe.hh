@@ -35,6 +35,7 @@ struct repairGraph {
             memcpy(in[i], G.in[i], sizeof(int)*_node_cnt);
             memcpy(out[i], G.out[i], sizeof(int)*_node_cnt);
         }
+        return *this;
     }
 
     void display() {

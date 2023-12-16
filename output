@@ -1,0 +1,25 @@
+standalone mode share the same block format and stripe store format with HDFS mode
+ecType = RS
+start to read the parameter.
+initCtx: connect to 192.168.7.14
+initCtx: connect to 192.168.7.23
+initCtx: connect to 192.168.7.27
+initCtx: connect to 192.168.7.28
+initCtx: connect to 192.168.7.30
+initCtx: connect to 192.168.7.13
+/home/lx/repairboost-code/conf/rsEncMat_3_4
+initializing rs utility
+RSUtil: RSEncMat:
+   1    0    0 
+   0    1    0 
+   0    0    1 
+   1    1    1 
+finish the parameter reading
+Start to create the MetadataBase!
+HDFS_MetadataBasefinished!
+P11Coordinator::init() ends
+P11Coordinator::cmdDistributor() starts
+P16LinesCoordinator::parseFNRequest() from IP .30 starts
+repair method = 0
+specialSource: 6
+ !!!!!! sort cmds for each slave by repairTime 
