@@ -3,6 +3,7 @@
 ECClient
 ECCoordinator
 ECHelper
+Simulation
 createdata_rs
 createdata_lrc
 createdata_butterfly
@@ -13,5 +14,7 @@ test/obj/*
 
 src/*.swp
 src/*/*.swp
+
+scripts/cluster/*
 
 .vscode/
