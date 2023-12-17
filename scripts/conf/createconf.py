@@ -3,12 +3,11 @@
 #       1. cluster [lab]
 #       2. block_source [standalone|hdfs]
 #       3. blockMiB [1]
-#       4. pktcount [64]
+#       4. PKTKB [64]kB
 #       5. code [Clay]
 #       6. ecn [4]
 #       7. eck [2]
 #       8. method [cr]
-#       9. PKTKB [64]kB
 
 
 import os
@@ -19,7 +18,7 @@ def usage():
     print("python createconf.py cluster[lab] block_source[standalone|hdfs]")
 
 
-if len(sys.argv) < 10:
+if len(sys.argv) < 9:
     usage()
     exit()
 
@@ -30,13 +29,12 @@ if len(sys.argv) == 3:
     block_source=sys.argv[2]
 
 BLKMB=int(sys.argv[3])
-pktcount=int(sys.argv[4])
+PKTKB=int(sys.argv[4])
 CODE=sys.argv[5]
 ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
 METHOD=sys.argv[8]   #
-PKTKB=int(sys.argv[9]) #
-ECW = int(sys.argv[10])
+ECW = int(sys.argv[9])
 
 RECVGROUP=10
 SENDGROUP=10
@@ -44,6 +42,7 @@ COMPUTEGROUP=10
 
 BLKBYTES=BLKMB*1048576
 PKTBYTES=PKTKB * 1024
+pktcount = BLKBYTES / PKTBYTES
 
 ECCSIZE="10"
 RPTHREADS="4"
