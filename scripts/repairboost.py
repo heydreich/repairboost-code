@@ -107,7 +107,7 @@ if gendata:
     os.system(cmd)
 
 # 2. create configuration file for parafullnode
-cmd="cd {}; python createconf.py {} {} {} {} {} {} {} {} {}".format(conf_dir, CLUSTER, BLOCKSOURCE, BLKMB, pktKiB, CODE, ECN, ECK, METHOD, ECW)
+cmd="cd {}; python createconf.py {} {} {} {} {} {} {} {} {}".format(conf_dir, CLUSTER, BLOCKSOURCE, BLKMB, PKTKB, CODE, ECN, ECK, METHOD, ECW)
 os.system(cmd)
 
 # 3. clear cache
