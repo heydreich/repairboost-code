@@ -35,7 +35,7 @@ def usage():
         #       11. cleandata [true|false]
         """)
 
-if len(sys.argv) < 12:
+if len(sys.argv) < 11:
     usage()
     exit()
 
