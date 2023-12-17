@@ -8,7 +8,8 @@
 #       6. ecn [4]
 #       7. eck [2]
 #       8. method [cr]
-#       9. PKTSIZE [1048576]
+#       9. PKTKB [64]kB
+
 
 import os
 import sys
@@ -34,7 +35,7 @@ CODE=sys.argv[5]
 ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
 METHOD=sys.argv[8]   #
-PKTSIZE=int(sys.argv[9]) #
+PKTKB=int(sys.argv[9]) #
 ECW = int(sys.argv[10])
 
 RECVGROUP=10
@@ -42,7 +43,7 @@ SENDGROUP=10
 COMPUTEGROUP=10
 
 BLKBYTES=BLKMB*1048576
-PKTBYTES=PKTSIZE
+PKTBYTES=PKTKB * 1024
 
 ECCSIZE="10"
 RPTHREADS="4"
