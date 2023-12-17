@@ -18,7 +18,7 @@ def usage():
     print("python createconf.py cluster[lab] block_source[standalone|hdfs]")
 
 
-if len(sys.argv) < 9:
+if len(sys.argv) < 10:
     usage()
     exit()
 
