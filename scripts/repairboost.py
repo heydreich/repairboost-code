@@ -1,16 +1,3 @@
-#usage:
-#   python fullnode.py
-#       1.  cluster [lab]
-#       2.  CODE [RS|LRC|BUTTERFLY]
-#       3.  ECN [4]
-#       4.  ECK [3]
-#       5.  ECW [0] The number of groups, only valid in LRC and BUTTERFLY. Default is 0.
-#       6.  method [cr|ppr|path]
-#       7.  blkMiB [1|256] MB
-#       8.  PKTSIZE [1|64] the size of packet, input 64 means 64K ,blkMiB need to be divided by PKTSIZE
-#       9.  num stripes [20]
-#       10. gendata [true|false]
-#       11. cleandata [true|false]
 
 
 import os
@@ -33,6 +20,7 @@ def usage():
         #       9.  num stripes [20]
         #       10. gendata [true|false]
         #       11. cleandata [true|false]
+        #       12. setbandwidth []
         """)
 
 if len(sys.argv) < 11:
@@ -45,17 +33,17 @@ ECN=int(sys.argv[3])
 ECK=int(sys.argv[4])
 ECW=int(sys.argv[5])
 METHOD=sys.argv[6]
-BLKMB=int(sys.argv[7]) 
-PKTKB=int(sys.argv[8]) 
+BLKMB=int(sys.argv[7])
+PKTKB=int(sys.argv[8])
 NSTRIPE=int(sys.argv[9])
 GENDATASTR=sys.argv[10]
-
 CLEANDATA = sys.argv[11]
+BANDWIDTH = int(sys.argv[12])
 # NTEST=int(sys.argv[13]) #?
 NTEST=1
 
 
-PKTSIZE = PKTSIZE * 1024
+PKTSIZE = PKTKB * 1024
 
 pktcount = BLKMB * 1048576 / PKTSIZE
 
@@ -69,7 +57,9 @@ cleandata = False
 if CLEANDATA == "true":
     cleandata = True
 
-BLOCKSOURCE="standalone"
+
+# BLOCKSOURCE="standalone"
+BLOCKSOURCE="HDFS3"
 FAILNODEID=0
 
 # home dir
@@ -92,8 +82,8 @@ network_dir="{}/network".format(script_dir)
 
 
 # 0. stop parafullnode
-# cmd="cd {}; python stop.py".format(script_dir)
-# os.system(cmd)
+cmd="cd {}; python stop.py".format(script_dir)
+os.system(cmd)
 
 # 1. gen data
 if cleandata:
@@ -101,8 +91,8 @@ if cleandata:
     # print(cmd)
     os.system(cmd)
 
+# gendate = false
 if gendata:
-
     cmd="cd {}; python gen_standalone_data.py {} {} {} {} {} {} {} {}".format(data_dir, CLUSTER, NSTRIPE, CODE, ECN, ECK, ECW, BLKMB, FAILNODEID)
     os.system(cmd)
 
@@ -115,17 +105,17 @@ cmd="cd {}; python clearcache.py {}".format(cache_dir, CLUSTER)
 os.system(cmd)
 
 # 4. set bdwt
-cmd="cd {}; python setbdwt.py {} {}".format(network_dir, CLUSTER, 500)
+cmd="cd {}; python setbdwt.py {} {}".format(network_dir, CLUSTER, BANDWIDTH)
 os.system(cmd)
 
 time.sleep(2)
 
-# 5. start 
+# 5. start
 cmd="cd {}; python start.py".format(script_dir)
 os.system(cmd)
 
 # 6. run
-for i in range(NTEST): 
+for i in range(NTEST):
     agentnodes=[]
     f=open(cluster_dir+"/agents","r")
     for line in f:
@@ -161,3 +151,5 @@ os.system(cmd)
 # 8. stop parafullnode
 cmd="cd {}; python stop.py".format(script_dir)
 os.system(cmd)
+
+cmd="for i in {001..030}; do ssh agent$i \"rm ~/repairboost-code/meta/standalone-meta/*\";done" 
