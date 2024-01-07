@@ -6,7 +6,7 @@
 #       4. pktcount [64]
 #       5. code [Clay]
 #       6. ecn [4]
-#       7. eck [2]
+#       7. eck [3]
 #       8. method [cr]
 #       9. PKTSIZE [1048576]
 
@@ -23,18 +23,14 @@ if len(sys.argv) < 10:
     exit()
 
 CLUSTER=sys.argv[1]
-block_source="standalone"
-
-if len(sys.argv) == 3:
-    block_source=sys.argv[2]
-
+block_source=sys.argv[2]
 BLKMB=int(sys.argv[3])
 pktcount=int(sys.argv[4])
 CODE=sys.argv[5]
 ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
-METHOD=sys.argv[8]   #
-PKTSIZE=int(sys.argv[9]) #
+METHOD=sys.argv[8]   
+PKTSIZE=int(sys.argv[9]) 
 ECW = int(sys.argv[10])
 
 RECVGROUP=10
@@ -67,11 +63,11 @@ tradeoffPoint_dir = "{}/offline".format(proj_dir)
 blk_dir = "{}/meta/standalone-blocks/{}_{}_{}_{}_{}".format(proj_dir, CODE, ECN, ECK, ECW, BLKMB)
 meta_dir = "{}/meta".format(proj_dir)
 
-#if block_source == "hdfs":
-#    cmd = r'echo $HADOOP_HOME'
-#    hadoop_home_dir_str, stderr = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).communicate()
-#    hadoop_home_dir = hadoop_home_dir_str.decode().strip()
-#    blk_dir = "{}/dfs/data/current".format(hadoop_home_dir)
+if block_source == "hdfs":
+   cmd = r'echo $HADOOP_HOME'
+   hadoop_home_dir_str, stderr = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE).communicate()
+   hadoop_home_dir = hadoop_home_dir_str.decode().strip()
+   blk_dir = "{}/dfs/data/current".format(hadoop_home_dir)
 
 clusternodes=[]
 controller=""
