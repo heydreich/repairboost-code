@@ -4,7 +4,7 @@
 <property><name>dfs.client.use.datanode.hostname</name><value>true</value></property>
 <property><name>dfs.replication</name><value>1</value></property>
 <property><name>dfs.blocksize</name><value>67108864</value></property>
-<property><name>repairboost.coordinator</name><value>192.168.0.201</value></property>
+<property><name>repairboost.coordinator</name><value>192.168.7.109</value></property>
 <property><name>dfs.datanode.ec.reconstruction.stripedread.buffer.size</name><value>1048576</value></property>
 <property><name>dfs.datanode.ec.repairboost</name><value>true</value></property>
 <property><name>repairboost.packetsize</name><value>1048576</value></property>
