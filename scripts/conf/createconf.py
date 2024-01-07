@@ -3,12 +3,13 @@
 #       1. cluster [lab]
 #       2. block_source [standalone|hdfs]
 #       3. blockMiB [1]
-#       4. pktcount [64]
+#       4. PKTKB [64]kB
 #       5. code [Clay]
 #       6. ecn [4]
 #       7. eck [3]
 #       8. method [cr]
-#       9. PKTSIZE [1048576]
+#       9. ecw [0]
+
 
 import os
 import sys
@@ -25,7 +26,7 @@ if len(sys.argv) < 10:
 CLUSTER=sys.argv[1]
 block_source=sys.argv[2]
 BLKMB=int(sys.argv[3])
-pktcount=int(sys.argv[4])
+PKTKB=int(sys.argv[4])
 CODE=sys.argv[5]
 ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
@@ -38,7 +39,8 @@ SENDGROUP=10
 COMPUTEGROUP=10
 
 BLKBYTES=BLKMB*1048576
-PKTBYTES=PKTSIZE
+PKTBYTES=PKTKB * 1024
+pktcount = BLKBYTES / PKTBYTES
 
 ECCSIZE="10"
 RPTHREADS="4"

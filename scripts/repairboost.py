@@ -23,7 +23,7 @@ def usage():
         #       12. setbandwidth []
         """)
 
-if len(sys.argv) < 11:
+if len(sys.argv) < 12:
     usage()
     exit()
 
@@ -97,7 +97,7 @@ if gendata:
     os.system(cmd)
 
 # 2. create configuration file for parafullnode
-cmd="cd {}; python createconf.py {} {} {} {} {} {} {} {} {} {}".format(conf_dir, CLUSTER, BLOCKSOURCE, BLKMB, pktcount, CODE, ECN, ECK, METHOD, PKTSIZE, ECW)
+cmd="cd {}; python createconf.py {} {} {} {} {} {} {} {} {}".format(conf_dir, CLUSTER, BLOCKSOURCE, BLKMB, PKTKB, CODE, ECN, ECK, METHOD, ECW)
 os.system(cmd)
 
 # 3. clear cache
