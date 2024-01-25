@@ -31,8 +31,7 @@ CODE=sys.argv[5]
 ECN=int(sys.argv[6])
 ECK=int(sys.argv[7])
 METHOD=sys.argv[8]   
-PKTSIZE=int(sys.argv[9]) 
-ECW = int(sys.argv[10])
+ECW = int(sys.argv[9])
 
 RECVGROUP=10
 SENDGROUP=10
